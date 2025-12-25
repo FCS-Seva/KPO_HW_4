@@ -110,4 +110,5 @@
 ### 5.1. Через Docker Compose
 В корне репозитория:
 ```bash
+cd deploy
 docker compose up --build
