@@ -1,0 +1,35 @@
+@model IReadOnlyList<Frontend.Models.OrderListItem>
+
+<table class="table" id="ordersTable">
+    <thead>
+    <tr>
+        <th>OrderId</th>
+        <th>Amount</th>
+        <th>Status</th>
+        <th>Created</th>
+    </tr>
+    </thead>
+    <tbody>
+    @if (Model is null || Model.Count == 0)
+    {
+        <tr>
+            <td colspan="4" class="small-muted">No orders yet.</td>
+        </tr>
+    }
+    else
+    {
+        @foreach (var o in Model)
+        {
+            <tr>
+                <td class="mono">
+                    <a href="/Order/@o.OrderId">@o.OrderId</a>
+                    <button type="button" class="btn small ghost" style="margin-left:8px" data-copy="@o.OrderId">Copy</button>
+                </td>
+                <td>@o.Amount</td>
+                <td>@await Html.PartialAsync("_StatusBadge", o.Status)</td>
+                <td class="small-muted">@o.CreatedAtUtc</td>
+            </tr>
+        }
+    }
+    </tbody>
+</table>

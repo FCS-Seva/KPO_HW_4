@@ -1,0 +1,88 @@
+@page
+@model Frontend.Pages.OrdersModel
+@{
+var userId = Model.UserId;
+}
+
+<div class="card">
+    <div class="h1">Заказы</div>
+    <div class="p">Создавай заказы и наблюдай за асинхронным обновлением статуса.</div>
+</div>
+
+<div class="grid cols-2">
+    <div class="card">
+        <div class="h2">Создать заказ</div>
+        <form method="post" asp-page-handler="CreateOrder" class="row" data-validate-form="true">
+            <div class="field">
+                <label>Сумма</label>
+                <input name="Amount" value="50" data-validate="amount" />
+            </div>
+            <div class="field" style="min-width: 280px; flex:1;">
+                <label>Описание</label>
+                <input name="Description" value="Подарок" placeholder="Необязательно" />
+            </div>
+            <button class="btn primary" type="submit">Создать</button>
+        </form>
+
+        <div class="hr"></div>
+
+        <div class="row" style="align-items:center;">
+            <div class="badge dot">@userId</div>
+            <div class="small-muted">Заказы связаны с UserId через заголовок.</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="h2">Автообновление</div>
+        <div class="p">Список заказов обновляется каждые 2.5 секунды. Можно поставить на паузу.</div>
+
+        <div class="hr"></div>
+
+        <div class="row" style="justify-content: space-between;">
+            <div class="badge dot warn" id="autoRefreshStatus">Автообновление: ВКЛ</div>
+            <button type="button" class="btn" id="autoRefreshToggle" data-enabled="true">Пауза</button>
+        </div>
+
+        <div class="hr"></div>
+        
+        <div class="grid cols-3">
+            <div class="field" style="min-width: 220px;">
+                <label>Поиск (OrderId)</label>
+                <input id="ordersSearch" placeholder="Начни вводить..." />
+            </div>
+            <div class="field" style="min-width: 220px;">
+                <label>Статус</label>
+                <select id="ordersStatusFilter">
+                    <option value="all">Все</option>
+                    <option value="new">Новый</option>
+                    <option value="finished">Завершён</option>
+                    <option value="cancelled">Отменён</option>
+                </select>
+            </div>
+            <div class="field" style="min-width: 220px;">
+                <label>Сортировка</label>
+                <select id="ordersSort">
+                    <option value="created_desc">По дате (сначала новые)</option>
+                    <option value="created_asc">По дате (сначала старые)</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="row" style="justify-content: space-between; align-items:center;">
+        <div>
+            <div class="h2" style="margin-bottom:4px;">Список</div>
+            <div class="small-muted">Нажми на OrderId, чтобы открыть детали.</div>
+        </div>
+        <button type="button" class="btn" onclick="location.reload();">Обновить страницу</button>
+    </div>
+
+    <div class="hr"></div>
+
+    <input type="hidden" id="ordersJsonEndpoint" value="@Url.Page("/Orders", "OrdersJson")" />
+
+    @await Html.PartialAsync("_OrderTable", Model.Orders)
+</div>
+

@@ -1,0 +1,11 @@
+@model string
+@{
+    var status = (Model ?? "").ToLowerInvariant();
+    var cls = status switch
+    {
+        "finished" => "ok",
+        "cancelled" => "err",
+        _ => "warn"
+    };
+}
+<span class="badge dot @cls">@Model</span>

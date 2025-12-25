@@ -1,0 +1,61 @@
+@page
+@model Frontend.Pages.AccountModel
+@{
+var userId = Model.UserId;
+}
+
+<div class="card">
+    <div class="h1">Счёт</div>
+    <div class="p">Создание счёта, пополнение и просмотр текущего баланса.</div>
+</div>
+
+<div class="grid cols-2">
+    <div class="card">
+        <div class="h2">Пользователь</div>
+        <div class="badge dot">@userId</div>
+
+        <div class="hr"></div>
+
+        <form method="post" asp-page-handler="CreateAccount">
+            <button class="btn primary" type="submit">Создать счёт</button>
+        </form>
+
+        <div class="small-muted" style="margin-top:10px;">
+            Если счёт уже существует, сервис может вернуть ошибку — это нормально.
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="h2">Баланс</div>
+
+        @if (Model.BalanceOk)
+        {
+        <div class="kpi">
+            <div class="value">@Model.Balance</div>
+            <div class="label">ед.</div>
+        </div>
+        }
+        else
+        {
+        <div class="badge dot err">Недоступно</div>
+        <div class="small-muted" style="margin-top:8px">@Model.BalanceError</div>
+        }
+
+        <div class="hr"></div>
+
+        <form method="post" asp-page-handler="RefreshBalance">
+            <button class="btn" type="submit">Обновить</button>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="h2">Пополнение</div>
+    <form method="post" asp-page-handler="TopUp" class="row" data-validate-form="true">
+        <div class="field">
+            <label>Сумма</label>
+            <input name="Amount" value="100" data-validate="amount" />
+        </div>
+        <button class="btn primary" type="submit">Пополнить</button>
+    </form>
+</div>

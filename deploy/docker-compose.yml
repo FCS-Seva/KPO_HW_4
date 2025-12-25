@@ -1,0 +1,81 @@
+services:
+  postgres:
+    image: postgres:16
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gozon -d postgres"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    environment:
+      POSTGRES_USER: gozon
+      POSTGRES_PASSWORD: gozon
+    volumes:
+      - gozon_pgdata:/var/lib/postgresql/data
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  orders:
+    build:
+      context: ..
+      dockerfile: services/OrdersService/src/OrdersService/Dockerfile
+    environment:
+      ConnectionStrings__OrdersDb: "Host=postgres;Port=5432;Database=orders_db;Username=gozon;Password=gozon"
+      Messaging__HostName: rabbitmq
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      - "8082:8080"
+
+  payments:
+    build:
+      context: ..
+      dockerfile: services/PaymentsService/src/PaymentsService/Dockerfile
+    environment:
+      ConnectionStrings__PaymentsDb: "Host=postgres;Port=5432;Database=payments_db;Username=gozon;Password=gozon"
+      Messaging__HostName: rabbitmq
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      - "8083:8080"
+
+  gateway:
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    build:
+      context: ..
+      dockerfile: services/Gateway/src/Gateway/Dockerfile
+    depends_on:
+      - orders
+      - payments
+    ports:
+      - "8080:8080"
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: services/Frontend/src/Frontend/Dockerfile
+    environment:
+      Gateway__BaseUrl: http://gateway:8080
+    depends_on:
+      - gateway
+    ports:
+      - "8081:8080"
+
+volumes:
+  gozon_pgdata:

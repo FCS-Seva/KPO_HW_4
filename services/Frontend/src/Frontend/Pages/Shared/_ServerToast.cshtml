@@ -1,0 +1,13 @@
+@{
+    var msg = TempData["Toast.Message"] as string;
+    var title = TempData["Toast.Title"] as string ?? "Info";
+    var type = TempData["Toast.Type"] as string ?? "";
+}
+
+@if (!string.IsNullOrWhiteSpace(msg))
+{
+    <div id="serverToast"
+         data-type="@type"
+         data-title="@title"
+         data-message="@msg"></div>
+}

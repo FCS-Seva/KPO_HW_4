@@ -1,0 +1,77 @@
+@page "{id:guid}"
+@model Frontend.Pages.OrderModel
+
+<div class="card">
+    <div class="h1">Заказ</div>
+    <div class="p">Детали и обновление статуса в real time.</div>
+</div>
+
+<div class="grid cols-2">
+    <div class="card">
+        <div class="h2">Основное</div>
+
+        <div class="hr"></div>
+
+        <div class="row" style="justify-content: space-between; align-items:center;">
+            <div class="small-muted">OrderId</div>
+            <div class="mono">@Model.Id</div>
+        </div>
+
+        <div class="hr"></div>
+
+        <div class="row" style="justify-content: space-between; align-items:center;">
+            <div class="small-muted">Статус</div>
+            <div id="orderStatusBadgeWrap">
+                @await Html.PartialAsync("_StatusBadge", Model.Order?.Status ?? "")
+            </div>
+        </div>
+
+        <div class="hr"></div>
+
+        <div class="row" style="justify-content: space-between; align-items:center;">
+            <div class="small-muted">Сумма</div>
+            <div class="mono">@Model.Order?.Amount</div>
+        </div>
+
+        <div class="hr"></div>
+
+        <div class="row" style="justify-content: space-between; align-items:center;">
+            <div class="small-muted">Описание</div>
+            <div>@Model.Order?.Description</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="h2">Время</div>
+
+        <div class="hr"></div>
+
+        <div class="row" style="justify-content: space-between; align-items:center;">
+            <div class="small-muted">Создан</div>
+            <div class="small-muted">@Model.Order?.CreatedAtUtc</div>
+        </div>
+
+        <div class="hr"></div>
+
+        <div class="row" style="justify-content: space-between; align-items:center;">
+            <div class="small-muted">Обновлён</div>
+            <div class="small-muted" id="orderUpdatedValue">@Model.Order?.UpdatedAtUtc</div>
+        </div>
+
+        <div class="hr"></div>
+
+        <form method="post">
+            <button class="btn" id="orderRefreshBtn" type="submit">Обновить</button>
+        </form>
+
+        <div class="hr"></div>
+
+        <div class="small-muted">Автообновление остановится, когда статус станет «Завершён» или «Отменён».</div>
+    </div>
+</div>
+
+<input type="hidden" id="orderJsonEndpoint" value="@Url.Page("/Order", "OrderJson", new { id = Model.Id })" />
+
+<div style="display:none">
+    <span id="orderStatusValue">@Model.Order?.Status</span>
+</div>

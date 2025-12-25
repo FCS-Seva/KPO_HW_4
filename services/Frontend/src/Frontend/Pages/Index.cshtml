@@ -1,0 +1,84 @@
+@page
+@model Frontend.Pages.IndexModel
+@{
+var userId = Model.UserId;
+}
+
+<div class="card">
+    <div class="h1">Панель</div>
+    <div class="p">Быстрые действия: баланс, создание заказов и наблюдение за асинхронной оплатой.</div>
+</div>
+
+<div class="grid cols-3">
+    <div class="card">
+        <div class="h1">Пользователь</div>
+        <div class="badge dot">@userId</div>
+        <div class="hr"></div>
+    </div>
+
+    <div class="card">
+        <div class="h2">Баланс</div>
+        @if (Model.BalanceOk)
+        {
+        <div class="kpi">
+            <div class="value">@Model.Balance</div>
+            <div class="label">ед.</div>
+        </div>
+        }
+        else
+        {
+        <div class="badge dot err">Недоступно</div>
+        <div class="small-muted" style="margin-top:8px">@Model.BalanceError</div>
+        }
+        <div class="hr"></div>
+
+        <form method="post" asp-page-handler="CreateAccount">
+            <button class="btn primary" type="submit">Создать счёт</button>
+        </form>
+
+        <div class="hr"></div>
+
+        <form method="post" asp-page-handler="TopUp" class="row" data-validate-form="true">
+            <div class="field">
+                <label>Сумма пополнения</label>
+                <input name="Amount" value="100" data-validate="amount" />
+            </div>
+            <button class="btn" type="submit">Пополнить</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <div class="h2">Создать заказ</div>
+        <form method="post" asp-page-handler="CreateOrder" class="row" data-validate-form="true">
+            <div class="field">
+                <label>Сумма</label>
+                <input name="Amount" value="50" data-validate="amount" />
+            </div>
+            <div class="field" style="min-width: 280px; flex:1;">
+                <label>Описание</label>
+                <input name="Description" value="Подарок" placeholder="Необязательно" />
+            </div>
+            <button class="btn primary" type="submit">Создать</button>
+        </form>
+
+        <div class="hr"></div>
+        <div class="small-muted">Статус заказа обновляется асинхронно.</div>
+        <div style="margin-top:8px">
+            <a class="btn small" asp-page="/Orders">Перейти к заказам</a>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="row" style="justify-content: space-between; align-items:center;">
+        <div>
+            <div class="h2" style="margin-bottom:4px;">Последние заказы</div>
+            <div class="small-muted">Автообновление включено на странице «Заказы».</div>
+        </div>
+        <a class="btn" asp-page="/Orders">Открыть список</a>
+    </div>
+
+    <div class="hr"></div>
+
+    @await Html.PartialAsync("_OrderTable", Model.LatestOrders)
+</div>

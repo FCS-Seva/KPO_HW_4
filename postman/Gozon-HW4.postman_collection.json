@@ -1,0 +1,177 @@
+{
+  "info": {
+    "name": "Gozon HW4",
+    "_postman_id": "71b34e4e-e2d6-466b-a484-cef98f1d61e6",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "user_id",
+      "value": "user-1"
+    },
+    {
+      "key": "order_id",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Payments - Create account",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-User-Id",
+            "value": "{{user_id}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/payments/accounts",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "payments",
+            "accounts"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Payments - Top up",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-User-Id",
+            "value": "{{user_id}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"amount\": 100\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/payments/accounts/topup",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "payments",
+            "accounts",
+            "topup"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Payments - Balance",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-User-Id",
+            "value": "{{user_id}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/payments/accounts/balance",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "payments",
+            "accounts",
+            "balance"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Orders - Create order",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-User-Id",
+            "value": "{{user_id}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"amount\": 50,\n  \"description\": \"Gift\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/orders",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "orders"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Orders - List",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-User-Id",
+            "value": "{{user_id}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/orders",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "orders"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Orders - Get by id",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-User-Id",
+            "value": "{{user_id}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/orders/{{order_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "orders",
+            "{{order_id}}"
+          ]
+        }
+      }
+    }
+  ]
+}

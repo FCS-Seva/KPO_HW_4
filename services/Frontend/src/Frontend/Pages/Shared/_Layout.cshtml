@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gozon Store</title>
+    <link rel="stylesheet" href="~/app.css" />
+</head>
+<body>
+<div class="topbar">
+    <div class="topbar-inner">
+        <div class="brand">
+            <div class="brand-badge"></div>
+            <div>
+                <div class="brand-title">Gozon Store</div>
+            </div>
+        </div>
+
+        <div class="nav">
+            <a asp-page="/Index" class="@(Context.Request.Path == "/" ? "active" : "")">Dashboard</a>
+            <a asp-page="/Account" class="@(Context.Request.Path.StartsWithSegments("/Account") ? "active" : "")">Account</a>
+            <a asp-page="/Orders" class="@(Context.Request.Path.StartsWithSegments("/Orders") ? "active" : "")">Orders</a>
+        </div>
+
+        <form method="post" asp-page="/Index" asp-page-handler="SetUserId" id="userIdForm" style="display:flex; gap:10px; align-items:end;">
+            <div class="field" style="min-width: 220px;">
+                <label>Текущий пользователь</label>
+                <input id="userIdInput" name="UserId" list="userIdHistory" value="@((Context.Request.Cookies["userId"] ?? "user-1"))" placeholder="user-1" />
+                <datalist id="userIdHistory"></datalist>
+            </div>
+            <button class="btn primary" type="submit">Изменить</button>
+        </form>
+    </div>
+</div>
+
+<div class="container">
+    @await Html.PartialAsync("_ServerToast")
+    @RenderBody()
+</div>
+
+<script src="~/app.js"></script>
+</body>
+</html>
